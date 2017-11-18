@@ -80,6 +80,9 @@ function ShieldSphereColorParticle:Draw()
   glMultiTexCoord(3, pos[1], pos[2], pos[3], 0)
   glMultiTexCoord(4, self.margin, self.size, 1, 1)
 
+  if self.texture then
+    gl.Texture(0, self.texture)
+  end
   glCallList(sphereList[self.shieldSize])
   if self.drawBack then
     gl.Scale(1,1,-1)
@@ -92,6 +95,9 @@ function ShieldSphereColorParticle:Draw()
       glMultiTexCoord(4, self.drawBackMargin, self.size, 1, 1)
     end
     glCallList(sphereList[self.shieldSize])
+  end
+  if self.texture then
+    gl.Texture(0, false)
   end
 end
 
@@ -108,6 +114,7 @@ function ShieldSphereColorParticle:Initialize()
       varying float opac;
       varying vec4 color1;
       varying vec4 color2;
+      varying vec2 texCoord;
 
       void main()
       {
@@ -119,19 +126,28 @@ function ShieldSphereColorParticle:Initialize()
 
           color1 = gl_MultiTexCoord1;
           color2 = gl_MultiTexCoord2;
+          
+          texCoord = gl_Vertex.zy;
       }
     ]],
     fragment = [[
       varying float opac;
       varying vec4 color1;
       varying vec4 color2;
+      
+      uniform sampler2D tex0;
+      varying vec2 texCoord;
 
       void main(void)
       {
-          gl_FragColor =  mix(color1,color2,opac);
+          vec4 color = texture2D(tex0, texCoord.st);
+          gl_FragColor = mix(color,mix(color1,color2,opac), 0.85);
       }
 
     ]],
+	uniformInt = {
+	  tex0 = 0,
+	},
     uniform = {
       margin = 1,
     }
@@ -144,6 +160,7 @@ function ShieldSphereColorParticle:Initialize()
 
   sphereList = {
     large = gl.CreateList(DrawSphere,0,0,0,1, 38,false),
+    medium = gl.CreateList(DrawSphere,0,0,0,1, 26, false),
     small = gl.CreateList(DrawSphere,0,0,0,1, 24,false),
   }
 end

@@ -7,6 +7,8 @@ local ShieldSphereBase = {
 	colormap2 = {{0.2, 0.9, 1, 0.0}, {1, 0.9, 0.2, 0.0}},
 	repeatEffect = true,
 	drawBack = 0.7,
+	onActive = true,
+	texture = "bitmaps/PD/shield3mist.png",
 }
 
 local SEARCH_SMALL = {
@@ -53,17 +55,21 @@ for unitDefID = 1, #UnitDefs do
 		local myShield = Spring.Utilities.CopyTable(ShieldSphereBase, true)
 		if radius > 250 then
 			myShield.shieldSize = "large"
-			myShield.drawBack = 0.6
-			myShield.drawBackMargin = 3
-			myShield.margin = 1.35
+			myShield.drawBack = 0.55
+			myShield.drawBackMargin = 3.5
+			myShield.margin = 2
 			myShield.hitResposeMult = 0.6
 			myShield.colormap1[1][4] = 0.22
 			myShield.colormap1[2][4] = 0.22
 		else
-			myShield.shieldSize = "small"
-			myShield.drawBack = 0.9
-			myShield.drawBackMargin = 1.9
-			myShield.margin = 1.2
+			if radius > 100 then
+				myShield.shieldSize = "medium"
+			else
+				myShield.shieldSize = "small"
+			end
+			myShield.drawBack = 0.75
+			myShield.drawBackMargin = 2.5
+			myShield.margin = 1.8
 			myShield.colormap1[1][4] = 0.22
 			myShield.colormap1[2][4] = 0.22
 			myShield.hitResposeMult = 1
